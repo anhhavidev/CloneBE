@@ -1,4 +1,9 @@
+using AutoMapper;
+using CloneBE.Application.Interface.Serivce;
+using CloneBE.Application.Mapper;
+using CloneBE.Domain.InterfaceRepo;
 using CloneBE.Infraction.Presistences;
+using CloneBE.Infraction.Repo;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -25,6 +30,14 @@ namespace CloneBEWebAPI
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<Databasese>()
     .AddDefaultTokenProviders();
+            builder.Services.AddScoped<IUnitOfWork1,UnitOfWork>();
+            builder.Services.AddScoped<IProductRepo, ProductRepo>();
+            builder.Services.AddScoped(typeof(IGennericRepo<>), typeof(GennerticRepo<>));
+            builder.Services.AddScoped<IProductService, ProductService>();
+
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

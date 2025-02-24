@@ -21,8 +21,4 @@
     <ProjectReference Include="..\CloneBE.Domain\CloneBE.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Repo\" />
-  </ItemGroup>
-
 </Project>
