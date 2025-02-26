@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using CloneBE.Application.DTO;
+using CloneBE.Application.DTO.Request;
 using CloneBE.Domain.EF;
 using CloneBE.Domain.InterfaceRepo;
 
@@ -19,18 +20,18 @@ namespace CloneBE.Application.Interface.Serivce
             this.unitOfWork1 = unitOfWork1;
             this.mapper = mapper;
         }
-        public async  Task<ProductDetail> CreateProduct(ProductDetail productdetail)
+        public async  Task<ProductRequest> CreateProduct(ProductRequest productdetail)
         {
             var product = mapper.Map<Product>(productdetail); // Map từ ProductDetail sang Product
              unitOfWork1.ProductRepo.Add(product); // Thêm vào database
             await unitOfWork1.SaveChangesAsync(); // Lưu thay đổi
 
-            return mapper.Map<ProductDetail>(product); // Trả về ProductDetail sau khi thêm
+            return mapper.Map<ProductRequest>(product); // Trả về ProductDetail sau khi thêm
         }
 
         public async Task<bool> DeleteProduct(int id)
         {
-            var product = await unitOfWork1.ProductRepo.GetProductByID(id);
+            var product = await unitOfWork1.ProductRepo.GetById(id);
             if (product == null) return false; // Trả về false nếu không tìm thấy sản phẩm
 
             unitOfWork1.ProductRepo.Delete(product); // Đánh dấu xóa
@@ -45,15 +46,21 @@ namespace CloneBE.Application.Interface.Serivce
             return  mapper.Map<IEnumerable<ProductDTO>>(products); // map từ tmp sang productdto
         }
 
-        public async Task<ProductDetail> GetProductByID(int id)
+        public async Task<IEnumerable<ProductDTO>> GetAllProductByCategory(int categoryId)
         {
-             var tmp = await unitOfWork1.ProductRepo.GetProductByID(id);
-            return mapper.Map<ProductDetail>(tmp);
+            var products =  await unitOfWork1.ProductRepo.GetAllProductByCategpry(categoryId);
+            return mapper.Map<IEnumerable<ProductDTO>>(products);
         }
 
-        public async Task<ProductDetail> UpdateProduct(ProductDetail productdetail)
+        public async Task<ProductRequest> GetProductByID(int id)
         {
-            var products = await unitOfWork1.ProductRepo.GetProductByID(productdetail.ProductId);
+             var tmp = await unitOfWork1.ProductRepo.GetById(id);
+            return mapper.Map<ProductRequest>(tmp);
+        }
+
+        public async Task<ProductRequest> UpdateProduct(ProductRequest productdetail)
+        {
+            var products = await unitOfWork1.ProductRepo.GetById(productdetail.ProductId);
             if (products == null) return null;
             mapper.Map(productdetail, products); // productdetail sang products
             unitOfWork1.ProductRepo.Update(products);

@@ -12,5 +12,6 @@ namespace CloneBE.Domain.InterfaceRepo
         void Update(T enity);
         void Delete(T enity);
         Task<IEnumerable<T>> GetAll();
+        Task<T?>GetById(int id);
     }
 }

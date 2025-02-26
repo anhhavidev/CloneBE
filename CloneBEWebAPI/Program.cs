@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using CloneBE.Application.Interface.Serivce;
 using CloneBE.Application.Mapper;
 using CloneBE.Domain.InterfaceRepo;
@@ -7,6 +7,11 @@ using CloneBE.Infraction.Repo;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace CloneBEWebAPI
 {
@@ -15,6 +20,37 @@ namespace CloneBEWebAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+                // 🔥 Thêm SecurityDefinition cho JWT Bearer
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Nhập token theo format: Bearer {your_token}"
+                });
+
+                // 🔥 Thêm SecurityRequirement để yêu cầu xác thực
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+            });
 
             // Add services to the container.
 
@@ -30,14 +66,50 @@ namespace CloneBEWebAPI
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<Databasese>()
     .AddDefaultTokenProviders();
-            builder.Services.AddScoped<IUnitOfWork1,UnitOfWork>();
+            builder.Services.AddScoped<IAcountRepository, AccountRepository>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IUnitOfWork1, UnitOfWork>();
             builder.Services.AddScoped<IProductRepo, ProductRepo>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+           
             builder.Services.AddScoped(typeof(IGennericRepo<>), typeof(GennerticRepo<>));
             builder.Services.AddScoped<IProductService, ProductService>();
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                };
+            })
+            .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+            {
+                options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+                options.CallbackPath = "/signin-google";
+            });
+            //;
+            builder.Services.AddAuthorization();
 
+
+            // Thêm Logging vào Web API
+            //builder.Logging.ClearProviders(); // Xóa cấu hình log mặc định
+            // builder.Logging.AddConsole(); // Log ra console
+            //builder.Logging.AddDebug(); // Log ra Debug Output (Visual Studio)
+            //builder.Logging.SetMinimumLevel(LogLevel.Information); // Mức log tối thiểu
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -48,7 +120,7 @@ namespace CloneBEWebAPI
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

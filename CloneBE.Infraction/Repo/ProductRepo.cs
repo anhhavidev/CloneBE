@@ -17,15 +17,17 @@ namespace CloneBE.Infraction.Repo
 
         }
 
+      
+
         public async Task<IEnumerable<Product>> GetAllProductByCategpry(int categpryId)
         {
            return await _dbset.Where(x=>x.CategoryId==categpryId).ToListAsync();
         }
 
-        public async Task<Product?> GetProductByID(int id)
-        {
-            var tmp = await _dbset.Where(x => x.ProductId == id).FirstOrDefaultAsync();
-            return tmp;
-        }
+        //public async Task<Product?> GetProductByID(int id)
+        //{
+        //    var tmp = await _dbset.Where(x => x.ProductId == id).FirstOrDefaultAsync();
+        //    return tmp;
+        //}
     }
 }

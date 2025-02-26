@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CloneBE.Application.DTO;
+using CloneBE.Application.DTO.Request;
 using CloneBE.Domain.EF;
 
 namespace CloneBE.Application.Interface.Serivce
@@ -11,9 +12,12 @@ namespace CloneBE.Application.Interface.Serivce
     public interface IProductService
     {
         Task<IEnumerable<ProductDTO>> GellALLProduct();
-        Task<ProductDetail> GetProductByID(int id);
-        Task<ProductDetail> CreateProduct(ProductDetail product);
-        Task<ProductDetail> UpdateProduct(ProductDetail product);
+        Task<ProductRequest> GetProductByID(int id);
+        Task<ProductRequest> CreateProduct(ProductRequest product);
+        Task<ProductRequest> UpdateProduct(ProductRequest product);
         Task<bool>DeleteProduct(int id);
+        Task<IEnumerable<ProductDTO>>GetAllProductByCategory(int categoryId);
+
+        //Task<IEnumerable<H> GetAll(string search, double? from, double? to, string sortBy, int page = 1)
     }
 }

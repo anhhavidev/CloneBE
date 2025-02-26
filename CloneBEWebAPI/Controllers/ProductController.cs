@@ -1,5 +1,7 @@
 ﻿using CloneBE.Application.DTO;
+using CloneBE.Application.DTO.Request;
 using CloneBE.Application.Interface.Serivce;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +17,7 @@ namespace CloneBEWebAPI.Controllers
         {
             _productService = productService;
         }
-
+        [Authorize]
         // Lấy tất cả sản phẩm
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
@@ -23,10 +25,15 @@ namespace CloneBEWebAPI.Controllers
             var products = await _productService.GellALLProduct();
             return Ok(products);
         }
-
+        [HttpGet("category/{categoryid}")]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProductByCategory(int categoryid)
+        {
+            var products = await  _productService.GetAllProductByCategory(categoryid);
+            return Ok(products);
+        }
         // Lấy sản phẩm theo ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDetail>> GetProductById(int id)
+        public async Task<ActionResult<ProductRequest>> GetProductById(int id)
         {
             var product = await _productService.GetProductByID(id);
             if (product == null) return NotFound("Sản phẩm không tồn tại.");
@@ -35,7 +42,7 @@ namespace CloneBEWebAPI.Controllers
 
         // Thêm sản phẩm mới
         [HttpPost("create")]
-        public async Task<ActionResult<ProductDetail>> CreateProduct([FromBody] ProductDetail productDetail)
+        public async Task<ActionResult<ProductRequest>> CreateProduct([FromBody] ProductRequest productDetail)
         {
             if (productDetail == null) return BadRequest("Dữ liệu không hợp lệ.");
 
@@ -45,7 +52,7 @@ namespace CloneBEWebAPI.Controllers
 
         // Cập nhật sản phẩm
         [HttpPut("update")]
-        public async Task<ActionResult<ProductDetail>> UpdateProduct([FromBody] ProductDetail productDetail)
+        public async Task<ActionResult<ProductRequest>> UpdateProduct([FromBody] ProductRequest productDetail)
         {
             if (productDetail == null) return BadRequest("Dữ liệu không hợp lệ.");
 

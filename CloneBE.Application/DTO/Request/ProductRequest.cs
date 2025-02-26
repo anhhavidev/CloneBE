@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CloneBE.Application.DTO
+namespace CloneBE.Application.DTO.Request
 {
-    public class ProductDetail
+    public class ProductRequest
     {
         public int ProductId { get; set; }
         public string Name { get; set; }

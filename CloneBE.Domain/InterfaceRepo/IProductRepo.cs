@@ -10,6 +10,7 @@ namespace CloneBE.Domain.InterfaceRepo
     public  interface IProductRepo : IGennericRepo<Product>
     {
         Task<IEnumerable<Product>>GetAllProductByCategpry(int categpryId);
-        Task<Product?>GetProductByID(int id);
+        //Task<Product?>GetProductByID(int id);
+       
     }
 }

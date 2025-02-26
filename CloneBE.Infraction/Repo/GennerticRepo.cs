@@ -36,6 +36,11 @@ namespace CloneBE.Infraction.Repo
             
         }
 
+        public async Task<T?> GetById(int id)
+        {
+            return await _dbset.FindAsync(id);
+        }
+
         public void  Update(T enity)
         {
              _dbset.Update(enity);
