@@ -17,7 +17,7 @@ namespace CloneBEWebAPI.Controllers
         {
             _productService = productService;
         }
-        [Authorize]
+      
         // Lấy tất cả sản phẩm
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()

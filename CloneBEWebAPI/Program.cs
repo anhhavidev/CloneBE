@@ -77,32 +77,43 @@ namespace CloneBEWebAPI
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
-                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-                };
-            })
-            .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-            {
-                options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-                options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-                options.CallbackPath = "/signin-google";
-            });
+           
+// Đăng ký Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            builder.Configuration["JWT:Secret"])),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+})
+.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+{
+    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+});
             //;
             builder.Services.AddAuthorization();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin()
+                              .AllowAnyMethod()
+                              .AllowAnyHeader();
+                    });
+            });
 
 
             // Thêm Logging vào Web API
@@ -121,6 +132,8 @@ namespace CloneBEWebAPI
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UseCors("AllowAll"); // Thêm dòng này trước app.UseAuthorization()
+
             app.UseAuthorization();
 
 
