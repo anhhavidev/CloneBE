@@ -11,7 +11,7 @@ namespace CloneBE.Domain.EF
         public int ProductId {  get; set; }
         public string Name {  get; set; }
         public string Description { get; set; }
-        public int Quanlity { get; set; }
+        public int stock { get; set; }
         private double _price;
         public double Price { 
             get 
@@ -25,7 +25,7 @@ namespace CloneBE.Domain.EF
         public int CategoryId { get; set; }
         public Category category { get; set; }
 
-
+        public List<CartItem> cartItems { get; set; }   
         
 
     }

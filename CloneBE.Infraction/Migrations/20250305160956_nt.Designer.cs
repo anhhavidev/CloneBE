@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CloneBE.Infraction.Migrations
 {
     [DbContext(typeof(Databasese))]
-    [Migration("20250225091848_nư")]
-    partial class nư
+    [Migration("20250305160956_nt")]
+    partial class nt
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,180 @@ namespace CloneBE.Infraction.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("CloneBE.Domain.EF.AppIdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "9676794a-27c1-46a9-ac53-7817c133aed7",
+                            ConcurrencyStamp = "abbd69a6-8aa0-4803-bb42-b011cc153be9",
+                            Name = "admin",
+                            NormalizedName = "ADMIN"
+                        });
+                });
+
+            modelBuilder.Entity("CloneBE.Domain.EF.AppUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "f4da1afc-b9ea-4f65-bfd5-36a029d86e3c",
+                            AccessFailedCount = 0,
+                            CartId = 0,
+                            ConcurrencyStamp = "82f428fa-80a6-4a9b-b3f3-0585c51d7846",
+                            Email = "honganh@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "HONGANH@GMAIL.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKeg7d0uOQIv/je5otsosBjxPp3+nQPSgm214PivC1mexL8c/Ovd0dj5Gf4PdLlKRw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "d8d4432b-fc91-419c-b43c-8241a12103e4",
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        });
+                });
+
+            modelBuilder.Entity("CloneBE.Domain.EF.Cart", b =>
+                {
+                    b.Property<int>("CartId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"), 1L, 1);
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CartId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("carts");
+                });
+
+            modelBuilder.Entity("CloneBE.Domain.EF.CartItem", b =>
+                {
+                    b.Property<int>("CartitemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartitemId"), 1L, 1);
+
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Productid")
+                        .HasColumnType("int");
+
+                    b.Property<double>("price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("quanlity")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartitemId");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("Productid");
+
+                    b.ToTable("cartItems");
+                });
 
             modelBuilder.Entity("CloneBE.Domain.EF.Category", b =>
                 {
@@ -88,12 +262,12 @@ namespace CloneBE.Infraction.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("Quanlity")
-                        .HasColumnType("int");
-
                     b.Property<string>("linkimages")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("stock")
+                        .HasColumnType("int");
 
                     b.HasKey("ProductId");
 
@@ -109,8 +283,8 @@ namespace CloneBE.Infraction.Migrations
                             Description = "Xe cho dân chuyên nghiệp",
                             Name = "Xe đạp thể thao",
                             Price = 1200.5,
-                            Quanlity = 10,
-                            linkimages = "img1.jpg"
+                            linkimages = "img1.jpg",
+                            stock = 10
                         },
                         new
                         {
@@ -119,44 +293,8 @@ namespace CloneBE.Infraction.Migrations
                             Description = "Nhẹ nhàng, dễ đi",
                             Name = "Xe đạp đường phố",
                             Price = 800.0,
-                            Quanlity = 5,
-                            linkimages = "img2.jpg"
-                        });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "556b6245-7109-4aad-a83d-97afaf8891ad",
-                            ConcurrencyStamp = "8e834649-38ea-4d22-bee6-333cdb4538bb",
-                            Name = "admin",
-                            NormalizedName = "ADMIN"
+                            linkimages = "img2.jpg",
+                            stock = 5
                         });
                 });
 
@@ -183,89 +321,6 @@ namespace CloneBE.Infraction.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "e77ccc94-77ef-4ad4-9951-038c0841d751",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "a7221e30-3949-4a8f-8859-3e4aaf5e672e",
-                            Email = "honganh@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "HONGANH@GMAIL.COM",
-                            NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAED8eUgQURUK9IiN/T1eeKSKGae1pjRiGsb8dpRfryMVTw2KrE1qyAw8XylVo/Lmjxg==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "75a04ba5-3fb7-480f-8036-c91becf816db",
-                            TwoFactorEnabled = false,
-                            UserName = "admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -332,8 +387,8 @@ namespace CloneBE.Infraction.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "e77ccc94-77ef-4ad4-9951-038c0841d751",
-                            RoleId = "556b6245-7109-4aad-a83d-97afaf8891ad"
+                            UserId = "f4da1afc-b9ea-4f65-bfd5-36a029d86e3c",
+                            RoleId = "9676794a-27c1-46a9-ac53-7817c133aed7"
                         });
                 });
 
@@ -356,6 +411,36 @@ namespace CloneBE.Infraction.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("CloneBE.Domain.EF.Cart", b =>
+                {
+                    b.HasOne("CloneBE.Domain.EF.AppUser", "User")
+                        .WithOne("Cart")
+                        .HasForeignKey("CloneBE.Domain.EF.Cart", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CloneBE.Domain.EF.CartItem", b =>
+                {
+                    b.HasOne("CloneBE.Domain.EF.Cart", "Cart")
+                        .WithMany("cartItems")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CloneBE.Domain.EF.Product", "Product")
+                        .WithMany("cartItems")
+                        .HasForeignKey("Productid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("CloneBE.Domain.EF.Product", b =>
                 {
                     b.HasOne("CloneBE.Domain.EF.Category", "category")
@@ -369,7 +454,7 @@ namespace CloneBE.Infraction.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("CloneBE.Domain.EF.AppIdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -378,7 +463,7 @@ namespace CloneBE.Infraction.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("CloneBE.Domain.EF.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -387,7 +472,7 @@ namespace CloneBE.Infraction.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("CloneBE.Domain.EF.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -396,13 +481,13 @@ namespace CloneBE.Infraction.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("CloneBE.Domain.EF.AppIdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("CloneBE.Domain.EF.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -411,16 +496,32 @@ namespace CloneBE.Infraction.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("CloneBE.Domain.EF.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("CloneBE.Domain.EF.AppUser", b =>
+                {
+                    b.Navigation("Cart")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CloneBE.Domain.EF.Cart", b =>
+                {
+                    b.Navigation("cartItems");
+                });
+
             modelBuilder.Entity("CloneBE.Domain.EF.Category", b =>
                 {
                     b.Navigation("products");
+                });
+
+            modelBuilder.Entity("CloneBE.Domain.EF.Product", b =>
+                {
+                    b.Navigation("cartItems");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,8 +9,10 @@ namespace CloneBE.Domain.InterfaceRepo
 {
     public interface IUnitOfWork1 :IDisposable
     {
+        ICartRepo cartRepo { get; }
         IGennericRepo<Category> CategoryRepo { get; }
         IProductRepo ProductRepo { get; }
+        IOrderRepository OrderRepo { get; }
         Task<int> SaveChangesAsync();
     }
 }

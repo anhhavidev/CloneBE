@@ -11,6 +11,8 @@ namespace CloneBE.Domain.InterfaceRepo
     {
         Task<IEnumerable<Product>>GetAllProductByCategpry(int categpryId);
         //Task<Product?>GetProductByID(int id);
-       
+        Task<Product> GetProductsByIdsAsync(int productIds);
+
+
     }
 }

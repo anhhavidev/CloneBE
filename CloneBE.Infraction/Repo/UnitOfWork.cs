@@ -18,11 +18,18 @@ namespace CloneBE.Infraction.Repo
 
         public IGennericRepo<Category> CategoryRepo { get; }
 
-        public UnitOfWork(Databasese databasese,IProductRepo productRepo,IGennericRepo<Category> categoryrepo)
+        public ICartRepo cartRepo { get; }
+     
+        public IOrderRepository OrderRepo { get; }
+
+        public UnitOfWork(Databasese databasese,IProductRepo productRepo,IGennericRepo<Category> categoryrepo,ICartRepo cartRepos,IOrderRepository orderRepository)
+
         {
             this.databasese = databasese;
             ProductRepo = productRepo;
             CategoryRepo = categoryrepo;
+            cartRepo = cartRepos;
+            OrderRepo = orderRepository;
         }
 
         public void Dispose()

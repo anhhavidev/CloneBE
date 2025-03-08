@@ -12,6 +12,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.Google;
+using CloneBE.Domain.EF;
+using CloneBEWebAPI.Middleware;
 
 namespace CloneBEWebAPI
 {
@@ -63,7 +65,7 @@ namespace CloneBEWebAPI
                 option.UseSqlServer(builder.Configuration.GetConnectionString("data"));
             });
 
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            builder.Services.AddIdentity<AppUser, AppIdentityRole>()
     .AddEntityFrameworkStores<Databasese>()
     .AddDefaultTokenProviders();
             builder.Services.AddScoped<IAcountRepository, AccountRepository>();
@@ -71,7 +73,10 @@ namespace CloneBEWebAPI
             builder.Services.AddScoped<IUnitOfWork1, UnitOfWork>();
             builder.Services.AddScoped<IProductRepo, ProductRepo>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
-           
+            builder.Services.AddScoped<ICartRepo, CartRePo>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped(typeof(IGennericRepo<>), typeof(GennerticRepo<>));
             builder.Services.AddScoped<IProductService, ProductService>();
 
@@ -118,15 +123,19 @@ namespace CloneBEWebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseMiddleware<ExceptionHandlingMiddleware>(); //su dung userouting thi đi cùng endpoint
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
 
-
+            // 3️⃣ Xử lý CORS (cho phép frontend gọi API)
+            app.UseCors(policy =>
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader());
             app.MapControllers();
 
-            app.Run();
+            app.Run(); // termidenal middleware 
         }
     }
 }

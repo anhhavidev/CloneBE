@@ -36,7 +36,7 @@ namespace CloneBEWebAPI.Controllers
         public async Task<ActionResult<ProductRequest>> GetProductById(int id)
         {
             var product = await _productService.GetProductByID(id);
-            if (product == null) return NotFound("Sản phẩm không tồn tại.");
+            //if (product == null) return NotFound("Sản phẩm không tồn tại.");
             return Ok(product);
         }
 

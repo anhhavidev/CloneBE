@@ -16,7 +16,8 @@ namespace CloneBE.Application.Mapper
           CreateMap<Product,ProductRequest>().ReverseMap();
           CreateMap<Product,ProductDTO>().ReverseMap();
             CreateMap<CategoryDTO, Category>().ForMember(x => x.CategoryId, y => y.Ignore()).ReverseMap();
-        
+         CreateMap<Order,OrderDTO>().ReverseMap();
+            CreateMap<OrderDetail, OrdetailSTO>().ReverseMap();
         
         }
     }

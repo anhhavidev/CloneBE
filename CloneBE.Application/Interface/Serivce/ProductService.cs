@@ -55,6 +55,8 @@ namespace CloneBE.Application.Interface.Serivce
         public async Task<ProductRequest> GetProductByID(int id)
         {
              var tmp = await unitOfWork1.ProductRepo.GetById(id);
+            if (tmp == null)
+                throw new KeyNotFoundException("Sản phẩm không tồn tại."); // ❌ Lỗi được ném ra ở Service
             return mapper.Map<ProductRequest>(tmp);
         }
 

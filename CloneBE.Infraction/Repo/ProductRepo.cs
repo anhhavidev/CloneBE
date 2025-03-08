@@ -24,10 +24,19 @@ namespace CloneBE.Infraction.Repo
            return await _dbset.Where(x=>x.CategoryId==categpryId).ToListAsync();
         }
 
+      
+        public async  Task<Product> GetProductsByIdsAsync(int productIds)
+        {
+            return await _dbset.FirstOrDefaultAsync(x => x.ProductId == productIds);
+        }
+
+
         //public async Task<Product?> GetProductByID(int id)
         //{
         //    var tmp = await _dbset.Where(x => x.ProductId == id).FirstOrDefaultAsync();
         //    return tmp;
         //}
+
+
     }
 }

@@ -13,7 +13,9 @@ using CloneBE.Application.Helper;
 using CloneBE.Domain.InterfaceRepo;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
- // config k lỗi
+using CloneBE.Domain.EF;
+using CloneBE.Application.DTO.Request;
+// config k lỗi
 
 namespace CloneBE.Application.Interface.Serivce
 {
@@ -41,13 +43,13 @@ namespace CloneBE.Application.Interface.Serivce
             return new AuthRespone { AccessToken = accessToken };
         }
 
-        private string GenerateAccessToken(IdentityUser user)
+        private string GenerateAccessToken(AppUser user)
         {
             var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Email, user.Email),
             new Claim("username", user.UserName),
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 
@@ -65,7 +67,7 @@ namespace CloneBE.Application.Interface.Serivce
 
         public async Task<IdentityResult> SignUpAsync(SignUpModel model)
         {
-            var user = new IdentityUser
+            var user = new AppUser
             {
                 PhoneNumber = model.phoneNumber,
                 Email = model.Email,

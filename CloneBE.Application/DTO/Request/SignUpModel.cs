@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CloneBE.Application.DTO
+namespace CloneBE.Application.DTO.Request
 {
     public class SignUpModel
     {

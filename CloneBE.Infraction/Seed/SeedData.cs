@@ -16,7 +16,7 @@ namespace CloneBE.Infraction.Seed
             var roleId = Guid.NewGuid().ToString();
             var adminId = Guid.NewGuid().ToString();
 
-            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
+            modelBuilder.Entity<AppIdentityRole>().HasData(new AppIdentityRole
             {
                 Id = roleId,
                 Name = "admin",
@@ -24,8 +24,8 @@ namespace CloneBE.Infraction.Seed
                 ConcurrencyStamp = Guid.NewGuid().ToString()
             });
 
-            var hasher = new PasswordHasher<IdentityUser>();
-            modelBuilder.Entity<IdentityUser>().HasData(new IdentityUser
+            var hasher = new PasswordHasher<AppUser>();
+            modelBuilder.Entity<AppUser>().HasData(new AppUser
             {
                 Id = adminId, // Id bây giờ là string
                 UserName = "admin",
@@ -53,8 +53,8 @@ namespace CloneBE.Infraction.Seed
                 );
             modelBuilder.Entity<Product>().HasData(
 
-                new Product { ProductId = 1, Name = "Xe đạp thể thao",Quanlity=10, Description = "Xe cho dân chuyên nghiệp", Price = 1200.50, linkimages = "img1.jpg", CategoryId = 1 },
-                new Product { ProductId = 2, Name = "Xe đạp đường phố",Quanlity=5, Description = "Nhẹ nhàng, dễ đi", Price = 800.00, linkimages = "img2.jpg", CategoryId = 2 }
+                new Product { ProductId = 1, Name = "Xe đạp thể thao",stock=10, Description = "Xe cho dân chuyên nghiệp", Price = 1200.50, linkimages = "img1.jpg", CategoryId = 1 },
+                new Product { ProductId = 2, Name = "Xe đạp đường phố", stock = 5, Description = "Nhẹ nhàng, dễ đi", Price = 800.00, linkimages = "img2.jpg", CategoryId = 2 }
             );
 
         }

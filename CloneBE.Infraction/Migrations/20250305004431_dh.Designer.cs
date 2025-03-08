@@ -4,6 +4,7 @@ using CloneBE.Infraction.Presistences;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CloneBE.Infraction.Migrations
 {
     [DbContext(typeof(Databasese))]
-    partial class DatabaseseModelSnapshot : ModelSnapshot
+    [Migration("20250305004431_dh")]
+    partial class dh
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,8 +54,8 @@ namespace CloneBE.Infraction.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "345da3fb-75e1-4c79-874f-b8f4df613f3f",
-                            ConcurrencyStamp = "d23b7fa2-6cc8-4d21-882c-e9c3e762fa74",
+                            Id = "f57bd87e-b8bf-48cb-83f4-0b589a56eda3",
+                            ConcurrencyStamp = "497701df-165f-4cc0-82ea-7c3d1f6742d1",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         });
@@ -130,18 +132,18 @@ namespace CloneBE.Infraction.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "30a4972f-3835-4915-bc78-6b1dfb525645",
+                            Id = "ee6c733c-8ea0-4361-ae55-83b68452b1f7",
                             AccessFailedCount = 0,
                             CartId = 0,
-                            ConcurrencyStamp = "b6627077-bd3a-45cf-9664-cb9ca58c48aa",
+                            ConcurrencyStamp = "af069983-1a82-4c06-a250-218af56b7062",
                             Email = "honganh@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "HONGANH@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEB9PD4oB4y6ktvioi+sPrXG8EScNSFIqxxM+ycPW4ElHVglyOUcF9B247ZbJdLlqwQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECizkNUhIJu8GaxXKg6sfhRZ/M6yHWLB2hhpT2b20cOnn7ZaSE83aQpvwlBlMrfI3w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "dda9a358-6817-4f2e-9d3f-cd3f0c79a433",
+                            SecurityStamp = "20027e60-d011-46b5-b02a-f1d7c977f814",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -236,79 +238,6 @@ namespace CloneBE.Infraction.Migrations
                             Description = "Dành cho trẻ em",
                             Name = "Xe đạp trẻ em"
                         });
-                });
-
-            modelBuilder.Entity("CloneBE.Domain.EF.Order", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
-
-                    b.Property<string>("ShippingAddress")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<double>("TotalAmount")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("OrderId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("orders");
-                });
-
-            modelBuilder.Entity("CloneBE.Domain.EF.OrderDetail", b =>
-                {
-                    b.Property<int>("OrderDetailId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderDetailId"), 1L, 1);
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<double>("UnitPrice")
-                        .HasColumnType("float");
-
-                    b.HasKey("OrderDetailId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("orderDetails");
                 });
 
             modelBuilder.Entity("CloneBE.Domain.EF.Product", b =>
@@ -458,8 +387,8 @@ namespace CloneBE.Infraction.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "30a4972f-3835-4915-bc78-6b1dfb525645",
-                            RoleId = "345da3fb-75e1-4c79-874f-b8f4df613f3f"
+                            UserId = "ee6c733c-8ea0-4361-ae55-83b68452b1f7",
+                            RoleId = "f57bd87e-b8bf-48cb-83f4-0b589a56eda3"
                         });
                 });
 
@@ -510,28 +439,6 @@ namespace CloneBE.Infraction.Migrations
                     b.Navigation("Cart");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("CloneBE.Domain.EF.Order", b =>
-                {
-                    b.HasOne("CloneBE.Domain.EF.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("CloneBE.Domain.EF.OrderDetail", b =>
-                {
-                    b.HasOne("CloneBE.Domain.EF.Order", "Order")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("CloneBE.Domain.EF.Product", b =>
@@ -610,11 +517,6 @@ namespace CloneBE.Infraction.Migrations
             modelBuilder.Entity("CloneBE.Domain.EF.Category", b =>
                 {
                     b.Navigation("products");
-                });
-
-            modelBuilder.Entity("CloneBE.Domain.EF.Order", b =>
-                {
-                    b.Navigation("OrderDetails");
                 });
 
             modelBuilder.Entity("CloneBE.Domain.EF.Product", b =>
