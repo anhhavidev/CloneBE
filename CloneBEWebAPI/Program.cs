@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.Google;
 using CloneBE.Domain.EF;
 using CloneBEWebAPI.Middleware;
+using CloneBE.Application.Helper;
 
 namespace CloneBEWebAPI
 {
@@ -79,6 +80,8 @@ namespace CloneBEWebAPI
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped(typeof(IGennericRepo<>), typeof(GennerticRepo<>));
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 

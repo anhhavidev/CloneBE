@@ -23,11 +23,13 @@ namespace CloneBE.Application.Interface.Serivce
     {
         private readonly IAcountRepository accountRepository;
         private readonly IConfiguration configuration;
+        private readonly IEmailService emailService;
 
-        public AccountService(IAcountRepository accountRepository, IConfiguration configuration)
+        public AccountService(IAcountRepository accountRepository, IConfiguration configuration, IEmailService  emailService)
         {
             this.accountRepository = accountRepository;
             this.configuration = configuration;
+            this.emailService = emailService;
         }
 
         public async Task<AuthRespone?> SignInAsync(SignInModel model)
@@ -87,6 +89,23 @@ namespace CloneBE.Application.Interface.Serivce
             }
 
             return result;
+        }
+
+        public async Task<string> ForgotPasswordAsync(string email, string requestScheme, string requestHost)
+        {
+            var user = await accountRepository.GetUserByEmailAsync(email);
+            if (user == null)
+                throw new ArgumentException("Không tìm thấy tài khoản!");
+
+            var token = await accountRepository.GenerateResetTokenAsync(user);
+
+            // Tạo link đặt lại mật khẩu
+            var resetLink = $"{requestScheme}://{requestHost}/reset-password?email={email}&token={Uri.EscapeDataString(token)}";
+
+            // Gửi email
+            await emailService.SendEmailAsync(user.Email, "Đặt lại mật khẩu", $"Click vào link để đặt lại mật khẩu: <a href='{resetLink}'>Reset Password</a>");
+
+            return "Vui lòng kiểm tra email để đặt lại mật khẩu!";
         }
     }
 }

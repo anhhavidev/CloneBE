@@ -54,6 +54,11 @@ namespace CloneBE.Infraction.Repo
         {
             await userManager.AddToRoleAsync(user, roleName);
         }
+
+        public async Task<string> GenerateResetTokenAsync(AppUser user)
+        {
+            return await userManager.GeneratePasswordResetTokenAsync(user);
+        }
     }
 
 }

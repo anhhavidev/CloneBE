@@ -18,6 +18,7 @@ namespace CloneBE.Domain.InterfaceRepo
         Task<bool> RoleExistsAsync(string roleName); // kiểm tra xem có vai trò đấy trong hệ thống k 
         Task<IdentityResult> CreateRoleAsync(string roleName); // tạo mới 1 vai trò 
         Task AddUserToRoleAsync(AppUser user, string roleName); // gán người dùng với vai trò cụ thể
+        Task<string> GenerateResetTokenAsync(AppUser user);//moi them 
     }
 
 }

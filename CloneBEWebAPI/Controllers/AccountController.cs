@@ -2,6 +2,7 @@
 using CloneBE.Application.DTO.Request;
 using CloneBE.Application.Interface.Serivce;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -59,5 +60,26 @@ namespace CloneBEWebAPI.Controllers
 
             return Ok(response);
         }
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new { message = "Thông tin không hợp lệ!" });
+
+            try
+            {
+                var message = await accountService.ForgotPasswordAsync(model.Email, Request.Scheme, Request.Host.ToString());
+                return Ok(new { message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Đã xảy ra lỗi, vui lòng thử lại sau!" });
+            }
+        }
+
     }
 }
