@@ -17,7 +17,44 @@ namespace CloneBEWebAPI.Controllers
         {
             this.accountService = accountService;
         }
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> SendForgotPasswordEmail([FromQuery] string email)
+        {
+            var isSent = await accountService.SendForgotPasswordEmail(email);
+            if (!isSent)
+            {
+                return NotFound("Email không tồn tại.");
+            }
+            return Ok("OTP đã được gửi tới email của bạn.");
+        }
 
+        /// <summary>
+        /// Xác thực OTP và cấp Reset Token
+        /// </summary>
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOTPAndGenerateResetToken([FromBody] VerifyOTPModel model)
+        {
+            var token = await accountService.VerifyOTPAndGenerateResetToken(model.Email, model.OTP);
+            if (token == null)
+            {
+                return BadRequest("Mã OTP không hợp lệ hoặc đã hết hạn.");
+            }
+            return Ok(new { ResetToken = token });
+        }
+
+        /// <summary>
+        /// Đặt lại mật khẩu
+        /// </summary>
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
+        {
+            var isSuccess = await accountService.ResetPassword(model);
+            if (!isSuccess)
+            {
+                return BadRequest("Không thể đặt lại mật khẩu. Vui lòng thử lại.");
+            }
+            return Ok("Mật khẩu đã được đặt lại thành công.");
+        }
 
         /// <summary>
         /// Đăng ký tài khoản mới

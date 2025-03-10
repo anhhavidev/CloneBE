@@ -8,6 +8,8 @@ using CloneBE.Application.DTO;
 using CloneBE.Application.DTO.Request;
 using CloneBE.Domain.EF;
 using CloneBE.Domain.InterfaceRepo;
+using CloneBE.Domain.Model;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace CloneBE.Application.Interface.Serivce
 {
@@ -50,6 +52,31 @@ namespace CloneBE.Application.Interface.Serivce
         {
             var products =  await unitOfWork1.ProductRepo.GetAllProductByCategpry(categoryId);
             return mapper.Map<IEnumerable<ProductDTO>>(products);
+        }
+
+        public async Task<ProductFilterResponse<ProductDTO>> GetFilteredProductsAsync(ProductFilterRequestDTO request)
+        {
+            var parameters = new ProductFilterParameters
+            {
+                SearchTerm = request.SearchTerm,
+                Category = request.Category,
+                MinPrice = request.MinPrice,
+                MaxPrice = request.MaxPrice,
+                SortBy = request.SortBy,
+                IsDescending = request.IsDescending,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize
+            };
+
+            var (products, totalCount) = await unitOfWork1.ProductRepo.GetFilteredProductsAsync(parameters);
+
+            return new ProductFilterResponse<ProductDTO>
+            {
+                Data = mapper.Map<List<ProductDTO>>(products),
+                TotalCount = totalCount,
+                PageSize = request.PageSize,
+                CurrentPage = request.PageNumber
+            };
         }
 
         public async Task<ProductRequest> GetProductByID(int id)

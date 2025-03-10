@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using CloneBE.Domain.EF;
 using CloneBE.Application.DTO.Request;
+using Microsoft.AspNetCore.Http;
 // config k lỗi
 
 namespace CloneBE.Application.Interface.Serivce
@@ -23,11 +24,17 @@ namespace CloneBE.Application.Interface.Serivce
     {
         private readonly IAcountRepository accountRepository;
         private readonly IConfiguration configuration;
+        private readonly ISendMailService mailService;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IOTPService otpService;
 
-        public AccountService(IAcountRepository accountRepository, IConfiguration configuration)
+        public AccountService(IAcountRepository accountRepository, IConfiguration configuration, ISendMailService mailService, IHttpContextAccessor httpContextAccessor, IOTPService otpService)
         {
             this.accountRepository = accountRepository;
             this.configuration = configuration;
+            this.mailService = mailService;
+            this.httpContextAccessor = httpContextAccessor;
+            this.otpService = otpService;
         }
 
         public async Task<AuthRespone?> SignInAsync(SignInModel model)
@@ -88,5 +95,43 @@ namespace CloneBE.Application.Interface.Serivce
 
             return result;
         }
+
+        public async Task<bool> SendForgotPasswordEmail(string email)
+        {
+            var user = await accountRepository.GetUserByEmailAsync(email);
+            if (user == null) return false;
+
+            var otpCode = otpService.GenerateOTP(email);
+            var mailContent = new MailContent
+            {
+                To = email,
+                Subject = "Xác thực đặt lại mật khẩu",
+                Body = $"<p>Mã OTP của bạn là: <strong>{otpCode}</strong>. Mã này có hiệu lực trong 5 phút.</p>"
+            };
+
+            await mailService.SendMail(mailContent);
+            return true;
+        }
+        public async Task<string?> VerifyOTPAndGenerateResetToken(string email, string otp)
+        {
+            var isValidOTP = otpService.ValidateOTP(email, otp);
+            if (!isValidOTP) return null;
+
+            var user = await accountRepository.GetUserByEmailAsync(email);
+            if (user == null) return null;
+
+            var token = await accountRepository.GeneratePasswordResetTokenAsync(user);
+            return token;
+        }
+
+        public  async Task<bool> ResetPassword(ResetPasswordModel model)
+        {
+            var user = await accountRepository.GetUserByEmailAsync(model.Email);
+            if (user == null) return false;
+
+            var result = await accountRepository.ResetPasswordAsync(user, model.Token, model.NewPassword);
+            return result.Succeeded;
+        
+    }
     }
 }

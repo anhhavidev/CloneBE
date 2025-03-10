@@ -81,11 +81,13 @@ namespace CloneBEWebAPI
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped(typeof(IGennericRepo<>), typeof(GennerticRepo<>));
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IOTPService, OTPService>();
+
             builder.Services.AddTransient<CloneBE.Application.Helper.ISendMailService, CloneBE.Application.Helper.SendMailService>();
             // Đọc cấu hình từ appsettings.json
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddAutoMapper(typeof(MappingProfile));
-
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -112,6 +114,7 @@ namespace CloneBEWebAPI
             });
             //;
             builder.Services.AddAuthorization();
+            builder.Services.AddMemoryCache();
 
 
             // Thêm Logging vào Web API

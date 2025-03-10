@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CloneBE.Application.Interface.Serivce
+{
+    public interface IOTPService
+    {
+        string GenerateOTP(string email);
+        bool ValidateOTP(string email, string otp);
+    }
+
+}

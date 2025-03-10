@@ -17,6 +17,7 @@ namespace CloneBE.Application.Interface.Serivce
         Task<ProductRequest> UpdateProduct(ProductRequest product);
         Task<bool>DeleteProduct(int id);
         Task<IEnumerable<ProductDTO>>GetAllProductByCategory(int categoryId);
+        Task<ProductFilterResponse<ProductDTO>> GetFilteredProductsAsync(ProductFilterRequestDTO request);
 
         //Task<IEnumerable<H> GetAll(string search, double? from, double? to, string sortBy, int page = 1)
     }

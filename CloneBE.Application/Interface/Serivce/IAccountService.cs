@@ -15,6 +15,9 @@ namespace CloneBE.Application.Interface.Serivce
     {
         Task<AuthRespone?> SignInAsync(SignInModel model);
         Task<IdentityResult> SignUpAsync(SignUpModel model);
+        Task<bool> SendForgotPasswordEmail(string email);
+        Task<bool> ResetPassword(ResetPasswordModel model);
+        Task<string?> VerifyOTPAndGenerateResetToken(string email, string otp);
     }
 
 }

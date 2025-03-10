@@ -17,7 +17,7 @@ namespace CloneBEWebAPI.Controllers
         {
             _productService = productService;
         }
-        [Authorize]
+   
         // Lấy tất cả sản phẩm
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
@@ -38,6 +38,12 @@ namespace CloneBEWebAPI.Controllers
             var product = await _productService.GetProductByID(id);
             //if (product == null) return NotFound("Sản phẩm không tồn tại.");
             return Ok(product);
+        }
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFilteredProducts([FromQuery] ProductFilterRequestDTO request)
+        {
+            var result = await _productService.GetFilteredProductsAsync(request);
+            return Ok(result);
         }
 
         // Thêm sản phẩm mới
