@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using CloneBE.Application.DTO;
 using CloneBE.Application.DTO.Request;
 using CloneBE.Domain.EF;
 using CloneBE.Domain.InterfaceRepo;
@@ -15,9 +17,11 @@ namespace CloneBE.Application.Interface.Serivce
     public class CartService :ICartService 
     {
         private readonly IUnitOfWork1 unitOfWork1;
+        private readonly IMapper mapper;
 
-        public CartService(IUnitOfWork1 unitOfWork1) {
+        public CartService(IUnitOfWork1 unitOfWork1,IMapper mapper) {
             this.unitOfWork1 = unitOfWork1;
+            this.mapper = mapper;
         }
 
         public async Task<bool> AddProductToCart(ProductCartRequest cartRequest, ClaimsPrincipal users)
@@ -59,7 +63,7 @@ namespace CloneBE.Application.Interface.Serivce
                     Productid = cartRequest.productId,
                     CartId = userCart.CartId,
                     quanlity = cartRequest.quantity,
-                    price = productToAdd.Price // Lấy giá từ sản phẩm
+                    price = (double)productToAdd.Price // Lấy giá từ sản phẩm
                 };
                 await unitOfWork1.cartRepo.addCartItem(cartItem);
             }
@@ -73,12 +77,13 @@ namespace CloneBE.Application.Interface.Serivce
             await unitOfWork1.SaveChangesAsync();
             return true;
         }
-        public  async Task<IEnumerable<CartItem>> GetallCartItem(ClaimsPrincipal users)
+        public  async Task<IEnumerable<CartItemDTO>> GetallCartItem(ClaimsPrincipal users)
         {
             var userid = users.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userid)) return null;
             var cartitems = await unitOfWork1.cartRepo.GetAllItem(userid);
-            return cartitems;
+            var dto = mapper.Map<IEnumerable<CartItemDTO>>(cartitems);
+            return dto;
 
         }
 

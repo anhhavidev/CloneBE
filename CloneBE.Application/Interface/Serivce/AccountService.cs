@@ -45,21 +45,25 @@ namespace CloneBE.Application.Interface.Serivce
                 return null;
             }
 
-            var accessToken = GenerateAccessToken(user);
+            var accessToken = await GenerateAccessTokenAsync(user);
 
             return new AuthRespone { AccessToken = accessToken };
         }
 
-        private string GenerateAccessToken(AppUser user)
+        private async Task<string> GenerateAccessTokenAsync(AppUser user)
         {
             var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim("username", user.UserName),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        };
-
+    {
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim("username", user.UserName),
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+    };
+            var roles = await accountRepository.GetUserRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
             var authKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
             var token = new JwtSecurityToken(
                 issuer: configuration["JWT:ValidIssuer"],
@@ -71,6 +75,7 @@ namespace CloneBE.Application.Interface.Serivce
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
 
         public async Task<IdentityResult> SignUpAsync(SignUpModel model)
         {

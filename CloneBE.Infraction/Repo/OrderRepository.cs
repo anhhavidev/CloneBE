@@ -64,6 +64,20 @@ namespace CloneBE.Infraction.Repo
             return await _context.Database.BeginTransactionAsync();
         }
 
-    
+        public async Task<bool> DeleteOrderAsync(int orderId)
+        {
+            var order = await _context.orders
+                .Include(o => o.OrderDetails) // Nếu muốn xoá cả chi tiết đơn
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null)
+                return false;
+
+            // Nếu cần xoá chi tiết đơn hàng trước
+            _context.orderDetails.RemoveRange(order.OrderDetails);
+
+            _context.orders.Remove(order);
+            return true;
+        }
     }
 }

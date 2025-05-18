@@ -21,21 +21,11 @@ namespace CloneBEWebAPI.Controllers
             return Ok(categorys);
 
         }
-        // ✅ Lấy danh mục theo ID
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<CategoryDTO>> GetCategoryById(int id)
-        {
-            var category = await categoryService.GetCategoryById(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            return Ok(category);
-        }
+       
 
         // ✅ Tạo danh mục mới
         [HttpPost]
-        public async Task<ActionResult<CategoryDTO>> CreateCategory([FromBody] CategoryDTO categoryDTO)
+        public async Task<ActionResult<CategoryDTO>> CreateCategory([FromBody] CategoryCreate categoryDTO)
         {
             if (categoryDTO == null)
             {
@@ -43,18 +33,18 @@ namespace CloneBEWebAPI.Controllers
             }
 
             var createdCategory = await categoryService.CreateCategory(categoryDTO);
-            return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.CategoryId }, createdCategory);
+            return Ok(createdCategory);
         }
-
-        // ✅ Cập nhật danh mục
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<CategoryDTO>> UpdateCategory([FromBody] CategoryDTO categoryDTO)
+        public async Task<ActionResult<CategoryDTO>> UpdateCategory(int id, [FromBody] CategoryDTO categoryDTO)
         {
-          
+            if (id != categoryDTO.CategoryId)
+                return BadRequest("Id trong URL không khớp với Id trong dữ liệu gửi lên");
 
             var updatedCategory = await categoryService.UpdateCategory(categoryDTO);
             return Ok(updatedCategory);
         }
+
 
         // ✅ Xóa danh mục
         [HttpDelete("{id:int}")]
@@ -65,7 +55,8 @@ namespace CloneBEWebAPI.Controllers
             {
                 return NotFound();
             }
-            return NoContent();
+            return Ok(new { message = "Xóa thành công" });
+
         }
     }
 }

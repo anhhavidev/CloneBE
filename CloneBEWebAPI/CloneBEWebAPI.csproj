@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Mapping\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
   <ItemGroup>

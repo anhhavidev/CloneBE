@@ -12,17 +12,16 @@ using CloneBE.Domain.InterfaceRepo;
 
 namespace CloneBE.Application.Interface.Serivce
 {
-    public class OrderService :IOrderService
+    public class OrderService : IOrderService
     {
         private readonly IUnitOfWork1 unitOfWork1;
         private readonly IMapper mapper;
 
-        public OrderService(IUnitOfWork1 unitOfWork1,IMapper mapper)
+        public OrderService(IUnitOfWork1 unitOfWork1, IMapper mapper)
         {
             this.unitOfWork1 = unitOfWork1;
             this.mapper = mapper;
         }
-
 
         public async Task<bool> PlaceOrderAsync(ClaimsPrincipal user, OrderRequest request)
         {
@@ -30,7 +29,7 @@ namespace CloneBE.Application.Interface.Serivce
             if (string.IsNullOrEmpty(userId)) return false;
 
             var cart = await unitOfWork1.cartRepo.CheckUserCart(userId);
-            if (cart == null || !cart.cartItems.Any()) return false;
+            if (cart?.cartItems == null || !cart.cartItems.Any()) return false;
 
             double totalAmount = cart.cartItems.Sum(ci => ci.quanlity * ci.price);
 
@@ -43,8 +42,8 @@ namespace CloneBE.Application.Interface.Serivce
                         UserId = userId,
                         TotalAmount = totalAmount,
                         Status = "Pending",
-                        PhoneNumber=request.PhoneNumber,
-                        ShippingAddress=request.ShippingAddress,
+                        PhoneNumber = request.PhoneNumber,
+                        ShippingAddress = request.ShippingAddress,
                         OrderDate = DateTime.UtcNow,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow,
@@ -58,24 +57,23 @@ namespace CloneBE.Application.Interface.Serivce
 
                     await unitOfWork1.OrderRepo.CreateOrderAsync(newOrder);
 
-                    // Cập nhật tồn kho trong cùng 1 transaction
+                    // Cập nhật tồn kho
                     foreach (var cartItem in cart.cartItems)
                     {
                         var product = await unitOfWork1.ProductRepo.GetProductsByIdsAsync(cartItem.Productid);
                         if (product == null || product.stock < cartItem.quanlity)
                         {
                             await transaction.RollbackAsync();
-                            return false; // Hủy giao dịch nếu tồn kho không đủ
+                            return false;
                         }
 
-                        // Trừ số lượng hàng trong kho
                         product.stock -= cartItem.quanlity;
-                         unitOfWork1.ProductRepo.Update(product);
+                        unitOfWork1.ProductRepo.Update(product);
                     }
 
+                    // Xoá cart items sau khi đặt hàng
                     var cartItemIds = cart.cartItems.Select(ci => ci.CartitemId).ToList();
                     await unitOfWork1.cartRepo.RemoveCartItemsByIdsAsync(cartItemIds);
-
 
                     await unitOfWork1.SaveChangesAsync();
                     await transaction.CommitAsync();
@@ -89,18 +87,44 @@ namespace CloneBE.Application.Interface.Serivce
             }
         }
 
-
         public async Task<OrderDTO?> GetOrderByIdAsync(int orderId)
         {
-           var order= await unitOfWork1.OrderRepo.GetOrderByIdAsync(orderId);
+            var order = await unitOfWork1.OrderRepo.GetOrderByIdAsync(orderId);
             return mapper.Map<OrderDTO>(order);
         }
 
+        public async Task<IEnumerable<OrderDTO>> GetOrdersByUserAsync(ClaimsPrincipal user)
+        {
+            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var orders = await unitOfWork1.OrderRepo.GetOrdersByUserIdAsync(userId);
+            return mapper.Map<IEnumerable<OrderDTO>>(orders);
+        }
+
+        public async Task<bool> ApproveOrderAsync(int orderId)
+        {
+            var order = await unitOfWork1.OrderRepo.GetOrderByIdAsync(orderId);
+            if (order == null || order.Status != "Paid") return false;
+
+            order.Status = "Approved";
+            order.UpdatedAt = DateTime.UtcNow;
+            await unitOfWork1.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteOrderAsync(int orderId)
+        {
+            var order = await unitOfWork1.OrderRepo.GetOrderByIdAsync(orderId);
+            if (order == null || order.Status == "Approved") return false;
+
+            await unitOfWork1.OrderRepo.DeleteOrderAsync(orderId);
+            await unitOfWork1.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<IEnumerable<OrderDTO>> GetOrdersByUserIdAsync(string userId)
-        {  
-            
-            var order = await unitOfWork1.OrderRepo.GetOrdersByUserIdAsync(userId);
-            return mapper.Map<IEnumerable<OrderDTO >> (order);
+        {
+            var orders = await unitOfWork1.OrderRepo.GetOrdersByUserIdAsync(userId);
+            return mapper.Map<IEnumerable<OrderDTO>>(orders);
         }
 
         public async Task<bool> UpdateOrderStatusAsync(int orderId, string newStatus)
@@ -114,6 +138,20 @@ namespace CloneBE.Application.Interface.Serivce
             {
                 return false;
             }
+        }
+
+        public async Task<bool> PayOrderAsync(int orderId, ClaimsPrincipal user)
+        {
+            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var order = await unitOfWork1.OrderRepo.GetOrderByIdAsync(orderId);
+
+            if (order == null || order.UserId != userId || order.Status != "Pending")
+                return false;
+
+            order.Status = "Paid";
+            order.UpdatedAt = DateTime.UtcNow;
+            await unitOfWork1.SaveChangesAsync();
+            return true;
         }
     }
 }

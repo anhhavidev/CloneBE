@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace CloneBE.Application.DTO.Request
 {
     public class ProductRequest
     {
-        public int ProductId { get; set; }
+        //public int ProductId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public int stock { get; set; }
@@ -23,7 +24,8 @@ namespace CloneBE.Application.DTO.Request
                 _price = value;
             }
         }
-        public string linkimages { get; set; }
+        public IFormFile LinkImagesPath { get; set; }  // Thêm trường này để nhận file ảnh
+     
         public int CategoryId { get; set; }
     }
 }

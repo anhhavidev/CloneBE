@@ -13,6 +13,10 @@ namespace CloneBE.Domain.InterfaceRepo
         IGennericRepo<Category> CategoryRepo { get; }
         IProductRepo ProductRepo { get; }
         IOrderRepository OrderRepo { get; }
+        IUserRepository UserRepository { get; }
         Task<int> SaveChangesAsync();
+        Task BeginTransactionAsync();
+        Task CommitAsync();
+        Task RollbackAsync();
     }
 }

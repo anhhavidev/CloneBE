@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CloneBE.Application.DTO
 {
-    public  class CategoryDTO 
+    public class CategoryCreate
     {
-        public int CategoryId { get; set; }
+  
         public string Name { get; set; }
         public string Description { get; set; }
     }

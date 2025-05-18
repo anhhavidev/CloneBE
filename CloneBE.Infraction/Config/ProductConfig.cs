@@ -15,7 +15,7 @@ namespace CloneBE.Infraction.Config
         {
             builder.HasKey(x => x.ProductId);
             builder.Property(x=>x.ProductId).UseIdentityColumn();
-            builder.Property(x => x.linkimages).IsRequired();
+            builder.Property(x => x.LinkImagesPath).IsRequired();
             builder.Property(x => x.Price).IsRequired();
             builder.Property(x => x.Name).IsRequired();
             //quan he 

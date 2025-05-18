@@ -8,7 +8,8 @@ namespace CloneBE.Application.DTO
 {
     public class ProductDTO
     {
-        public string linkimages { get; set; }
+        public int ProductId { get; set; }
+        public string LinkImagesPath { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
        

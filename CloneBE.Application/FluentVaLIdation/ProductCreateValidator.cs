@@ -23,7 +23,7 @@ namespace CloneBE.Application.FluentVaLIdation
                 .GreaterThanOrEqualTo(0).WithMessage("Stock cannot be negative.");
 
             RuleFor(X => X.Description).Length(1, 200).WithMessage("dESCRIPTION MUST BE  > 100 AND < 200");
-            RuleFor(X => X.linkimages).NotEmpty();
+       
 
 
 

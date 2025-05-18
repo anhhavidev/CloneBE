@@ -17,38 +17,40 @@ namespace CloneBEWebAPI.Controllers
         {
             _cartService = cartService;
         }
-        [HttpGet("gETCARRTITEM")]
-        //public Task<IActionResult> Get()
-        //{
-
-
-        //}
-
-        /// <summary>
-        /// Thêm sản phẩm vào giỏ hàng
-        /// </summary>
         [HttpPost("add")]
-        public async Task<IActionResult> AddProductToCart([FromBody] ProductCartRequest cartRequest)
+        public async Task<IActionResult> AddToCart([FromBody] ProductCartRequest request)
         {
-            var user = User; // Lấy thông tin người dùng từ token
-            var result = await _cartService.AddProductToCart(cartRequest, user);
+            var result = await _cartService.AddProductToCart(request, User);
             if (!result)
-                return BadRequest("Không thể thêm sản phẩm vào giỏ hàng. Có thể hết hàng hoặc lỗi khác.");
-
-            return Ok("Sản phẩm đã được thêm vào giỏ hàng.");
+            {
+                return BadRequest("Không thể thêm sản phẩm vào giỏ hàng. Có thể sản phẩm hết hàng.");
+            }
+            return Ok("Đã thêm vào giỏ hàng thành công.");
         }
 
-        /// <summary>
-        /// Xóa sản phẩm khỏi giỏ hàng
-        /// </summary>
-        [HttpDelete("delete/{cartItemId}")]
-        public async Task<IActionResult> DeleteCartItem(int cartItemId)
+        // GET: api/cart/items
+        [HttpGet("items")]
+        public async Task<IActionResult> GetCartItems()
         {
-            var result = await _cartService.DeleteCartItem(cartItemId);
-            if (!result)
-                return BadRequest("Không thể xóa sản phẩm khỏi giỏ hàng.");
+            var cartItems = await _cartService.GetallCartItem(User);
+            if (cartItems == null)
+            {
+                return NotFound("Không tìm thấy giỏ hàng.");
+            }
+            return Ok(cartItems);
+        }
 
-            return Ok("Sản phẩm đã được xóa khỏi giỏ hàng.");
+        // DELETE: api/cart/item/{id}
+
+        [HttpDelete("item/{id}")]
+        public async Task<IActionResult> DeleteCartItem(int id)
+        {
+            var result = await _cartService.DeleteCartItem(id);
+            if (!result)
+            {
+                return NotFound("Không tìm thấy mục giỏ hàng cần xoá.");
+            }
+            return Ok("Đã xoá sản phẩm khỏi giỏ hàng.");
         }
     }
 }

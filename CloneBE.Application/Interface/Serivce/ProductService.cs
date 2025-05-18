@@ -9,6 +9,7 @@ using CloneBE.Application.DTO.Request;
 using CloneBE.Domain.EF;
 using CloneBE.Domain.InterfaceRepo;
 using CloneBE.Domain.Model;
+using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace CloneBE.Application.Interface.Serivce
@@ -22,14 +23,32 @@ namespace CloneBE.Application.Interface.Serivce
             this.unitOfWork1 = unitOfWork1;
             this.mapper = mapper;
         }
-        public async  Task<ProductRequest> CreateProduct(ProductRequest productdetail)
+        public async Task<ProductResponse> CreateProduct(ProductRequest productRequest)
         {
-            var product = mapper.Map<Product>(productdetail); // Map từ ProductDetail sang Product
-             unitOfWork1.ProductRepo.Add(product); // Thêm vào database
-            await unitOfWork1.SaveChangesAsync(); // Lưu thay đổi
+            var product = mapper.Map<Product>(productRequest); // map từ ProductRequest sang Product
 
-            return mapper.Map<ProductRequest>(product); // Trả về ProductDetail sau khi thêm
+            // Xử lý ảnh
+            if (productRequest.LinkImagesPath != null)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(productRequest.LinkImagesPath.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await productRequest.LinkImagesPath.CopyToAsync(stream);
+                }
+
+                product.LinkImagesPath = "/images/" + fileName;
+            }
+
+            unitOfWork1.ProductRepo.Add(product);
+            await unitOfWork1.SaveChangesAsync();
+
+            // map sang ProductResponse để trả về cho client
+            return mapper.Map<ProductResponse>(product);
         }
+
+
 
         public async Task<bool> DeleteProduct(int id)
         {
@@ -79,22 +98,46 @@ namespace CloneBE.Application.Interface.Serivce
             };
         }
 
-        public async Task<ProductRequest> GetProductByID(int id)
+        public async Task<ProductResponse> GetProductByID(int id)
         {
              var tmp = await unitOfWork1.ProductRepo.GetById(id);
             if (tmp == null)
                 throw new KeyNotFoundException("Sản phẩm không tồn tại."); // ❌ Lỗi được ném ra ở Service
-            return mapper.Map<ProductRequest>(tmp);
+            return mapper.Map<ProductResponse>(tmp);
         }
 
-        public async Task<ProductRequest> UpdateProduct(ProductRequest productdetail)
+
+        public async Task<ProductResponse> UpdateProduct(ProductUpdateRequest productDetail)
         {
-            var products = await unitOfWork1.ProductRepo.GetById(productdetail.ProductId);
-            if (products == null) return null;
-            mapper.Map(productdetail, products); // productdetail sang products
-            unitOfWork1.ProductRepo.Update(products);
+            var product = await unitOfWork1.ProductRepo.GetById(productDetail.ProductId);
+            if (product == null)
+                return null;
+
+            // Nếu có ảnh mới thì xử lý lưu ảnh
+            if (productDetail.LinkImages != null && productDetail.LinkImages.Length > 0)
+            {
+                var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(productDetail.LinkImages.FileName)}";
+                var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                Directory.CreateDirectory(uploadPath); // Đảm bảo thư mục tồn tại
+                var filePath = Path.Combine(uploadPath, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await productDetail.LinkImages.CopyToAsync(stream);
+                }
+
+                product.LinkImagesPath = "/images/" + uniqueFileName;
+            }
+
+            // Cập nhật các trường khác
+            mapper.Map(productDetail, product);
+            unitOfWork1.ProductRepo.Update(product);
             await unitOfWork1.SaveChangesAsync();
-            return productdetail;
+
+            return mapper.Map<ProductResponse>(product);
         }
+
+
+
     }
 }

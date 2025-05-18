@@ -12,9 +12,9 @@ namespace CloneBE.Application.Interface.Serivce
     public interface IProductService
     {
         Task<IEnumerable<ProductDTO>> GellALLProduct();
-        Task<ProductRequest> GetProductByID(int id);
-        Task<ProductRequest> CreateProduct(ProductRequest product);
-        Task<ProductRequest> UpdateProduct(ProductRequest product);
+        Task<ProductResponse> GetProductByID(int id);
+        Task<ProductResponse> CreateProduct(ProductRequest productRequest);
+        Task<ProductResponse> UpdateProduct(ProductUpdateRequest productDetail);
         Task<bool>DeleteProduct(int id);
         Task<IEnumerable<ProductDTO>>GetAllProductByCategory(int categoryId);
         Task<ProductFilterResponse<ProductDTO>> GetFilteredProductsAsync(ProductFilterRequestDTO request);

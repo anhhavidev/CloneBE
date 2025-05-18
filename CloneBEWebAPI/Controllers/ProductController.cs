@@ -35,10 +35,17 @@ namespace CloneBEWebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductRequest>> GetProductById(int id)
         {
-            var product = await _productService.GetProductByID(id);
-            //if (product == null) return NotFound("Sản phẩm không tồn tại.");
-            return Ok(product);
+            try
+            {
+                var product = await _productService.GetProductByID(id);
+                return Ok(product);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message); // 404 nếu không tìm thấy
+            }
         }
+
         [HttpGet("filter")]
         public async Task<IActionResult> GetFilteredProducts([FromQuery] ProductFilterRequestDTO request)
         {
@@ -48,7 +55,8 @@ namespace CloneBEWebAPI.Controllers
 
         // Thêm sản phẩm mới
         [HttpPost("create")]
-        public async Task<ActionResult<ProductRequest>> CreateProduct([FromBody] ProductRequest productDetail)
+      
+        public async Task<ActionResult<ProductResponse>> CreateProduct([FromForm] ProductRequest productDetail)
         {
             if (productDetail == null) return BadRequest("Dữ liệu không hợp lệ.");
 
@@ -56,17 +64,21 @@ namespace CloneBEWebAPI.Controllers
             return CreatedAtAction(nameof(GetProductById), new { id = createdProduct.ProductId }, createdProduct);
         }
 
-        // Cập nhật sản phẩm
-        [HttpPut("update")]
-        public async Task<ActionResult<ProductRequest>> UpdateProduct([FromBody] ProductRequest productDetail)
+
+        // PUT: api/products/5
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<ProductResponse>> UpdateProduct(int id, [FromForm] ProductUpdateRequest productDetail)
         {
-            if (productDetail == null) return BadRequest("Dữ liệu không hợp lệ.");
+            if (productDetail == null || productDetail.ProductId != id)
+                return BadRequest("Dữ liệu không hợp lệ hoặc Id không khớp.");
 
             var updatedProduct = await _productService.UpdateProduct(productDetail);
-            if (updatedProduct == null) return NotFound("Sản phẩm không tồn tại.");
+            if (updatedProduct == null)
+                return NotFound("Sản phẩm không tồn tại.");
 
             return Ok(updatedProduct);
         }
+
 
         // Xóa sản phẩm
         [HttpDelete("delete/{id}")]

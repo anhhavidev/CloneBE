@@ -13,12 +13,21 @@ namespace CloneBE.Application.Mapper
     public class MappingProfile : Profile
     {
         public MappingProfile() {
-          CreateMap<Product,ProductRequest>().ReverseMap();
+          //CreateMap<Product,ProductRequest>().ReverseMap();
           CreateMap<Product,ProductDTO>().ReverseMap();
             CreateMap<CategoryDTO, Category>().ForMember(x => x.CategoryId, y => y.Ignore()).ReverseMap();
          CreateMap<Order,OrderDTO>().ReverseMap();
             CreateMap<OrderDetail, OrdetailSTO>().ReverseMap();
-        
+            CreateMap<ProductRequest, Product>().ReverseMap();
+            CreateMap<ProductUpdateRequest, Product>()
+    .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<Product, ProductResponse>();
+            CreateMap<CartItem, CartItemDTO>();
+            CreateMap<Category, CategoryCreate>().ReverseMap();
+
+
+
         }
     }
 }

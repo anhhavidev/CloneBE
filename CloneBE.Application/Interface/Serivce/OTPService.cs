@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
+using static System.Net.WebRequestMethods;
 
 namespace CloneBE.Application.Interface.Serivce
 {
@@ -34,6 +35,10 @@ namespace CloneBE.Application.Interface.Serivce
             return false;
         }
     }
+//    Nhược điểm & Cải thiện:
+
+//OTP có thể bị đoán nếu dùng Random(), nên nên dùng RNGCryptoServiceProvider hoặc Guid.NewGuid().
+//Không có cơ chế chống brute-force(nếu người dùng nhập sai nhiều lần). Cần thêm giới hạn số lần nhập OTP.
 
 }
 

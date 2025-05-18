@@ -4,6 +4,7 @@ using CloneBE.Infraction.Presistences;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CloneBE.Infraction.Migrations
 {
     [DbContext(typeof(Databasese))]
-    partial class DatabaseseModelSnapshot : ModelSnapshot
+    [Migration("20250512063757_nit")]
+    partial class nit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,8 +54,8 @@ namespace CloneBE.Infraction.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "27e41a1b-4d16-4f23-8e11-872dea85d0df",
-                            ConcurrencyStamp = "068553ec-c9ed-4392-8d61-d346221450d4",
+                            Id = "7023acd3-a5fb-4181-a7b2-cda4a85a80f3",
+                            ConcurrencyStamp = "31506f98-69ae-430c-9026-c725b405ee14",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         });
@@ -130,18 +132,18 @@ namespace CloneBE.Infraction.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "18a32fcb-b756-4a9d-a9ad-54f62234e841",
+                            Id = "a1f8fc49-0b42-4fca-8d11-bd7b64f929e2",
                             AccessFailedCount = 0,
                             CartId = 0,
-                            ConcurrencyStamp = "8ae0dee2-e25f-43b8-9ec9-b85c98a1d15b",
+                            ConcurrencyStamp = "82a44453-26a8-40cf-94d9-8b1f745e8951",
                             Email = "honganh@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "HONGANH@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDK06ROq938hA2b93XZf9vC4V3OLbpqDX0ABKWarQh2nfK+m3jrJw7RQ1ab0k/K28Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAQYBxkXoZ4V9RXZdY8yuGrIdKV+4iR8hR/OZyCy/UOtbIGVX7MC3/3k4vw4asIOZw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c3dbbc1e-2b21-4e26-ad8c-0fcbd8aa35d8",
+                            SecurityStamp = "cfbd61f1-3d25-413c-95cc-1ca4d8013ed5",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -319,11 +321,11 @@ namespace CloneBE.Infraction.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"), 1L, 1);
 
-                    b.Property<int?>("CategoryId")
-                        .IsRequired()
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LinkImagesPath")
@@ -334,11 +336,10 @@ namespace CloneBE.Infraction.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Price")
-                        .IsRequired()
+                    b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int?>("stock")
+                    b.Property<int>("stock")
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
@@ -539,8 +540,8 @@ namespace CloneBE.Infraction.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "18a32fcb-b756-4a9d-a9ad-54f62234e841",
-                            RoleId = "27e41a1b-4d16-4f23-8e11-872dea85d0df"
+                            UserId = "a1f8fc49-0b42-4fca-8d11-bd7b64f929e2",
+                            RoleId = "7023acd3-a5fb-4181-a7b2-cda4a85a80f3"
                         });
                 });
 

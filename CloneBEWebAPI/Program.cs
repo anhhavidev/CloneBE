@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using CloneBE.Domain.EF;
 using CloneBEWebAPI.Middleware;
 using CloneBE.Application.Helper;
+using CloneBE.Application.Interface;
 
 
 namespace CloneBEWebAPI
@@ -82,7 +83,8 @@ namespace CloneBEWebAPI
             builder.Services.AddScoped(typeof(IGennericRepo<>), typeof(GennerticRepo<>));
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IOTPService, OTPService>();
-
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IIUserService, UserService>();
             builder.Services.AddTransient<CloneBE.Application.Helper.ISendMailService, CloneBE.Application.Helper.SendMailService>();
             // Đọc cấu hình từ appsettings.json
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
@@ -134,6 +136,7 @@ namespace CloneBEWebAPI
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseStaticFiles(); // Để truy cập ảnh qua đường dẫn /images/
 
             // 3️⃣ Xử lý CORS (cho phép frontend gọi API)
             app.UseCors(policy =>

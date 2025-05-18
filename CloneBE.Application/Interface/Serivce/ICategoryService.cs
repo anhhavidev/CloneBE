@@ -9,11 +9,11 @@ namespace CloneBE.Application.Interface.Serivce
 {
     public interface ICategoryService
     {
-        public Task<IEnumerable<CategoryDTO>> GetALLCategory();
-        public Task<CategoryDTO> CreateCategory(CategoryDTO categoryDTO);
+         Task<IEnumerable<CategoryDTO>> GetALLCategory();
+        Task<CategoryCreate> CreateCategory(CategoryCreate categoryDTO);
         Task<CategoryDTO> UpdateCategory(CategoryDTO categoryDTO);
         Task<bool> DeleteCategory(int id);
-        Task<CategoryDTO?>GetCategoryById(int id);
+       
        
     }
 }
