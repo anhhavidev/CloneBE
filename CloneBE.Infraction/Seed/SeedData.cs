@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CloneBE.Infraction.Seed
 {
-    public static  class SeedData
+    public static class SeedData
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
@@ -36,6 +36,9 @@ namespace CloneBE.Infraction.Seed
                 PasswordHash = hasher.HashPassword(null, "Abc1234@"),
                 SecurityStamp = Guid.NewGuid().ToString(), // SecurityStamp cần là string
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Address = " g",  // Thêm trường này
+                PhoneNumber = "0123456789",   // Nếu cũng là required
+                FullName = "User"       // Nếu cũng là required
 
             });
 
@@ -44,26 +47,65 @@ namespace CloneBE.Infraction.Seed
                 RoleId = roleId,
                 UserId = adminId
             });
+            // 6 Category laptop
             modelBuilder.Entity<Category>().HasData(
-                 new Category { CategoryId = 1, Name = "Xe đạp địa hình", Description = "Dành cho đường núi" },
-                 new Category { CategoryId = 2, Name = "Xe đạp đường phố", Description = "Dành cho đường bằng" },
-                 new Category { CategoryId = 3, Name = "Xe đạp trẻ em", Description = "Dành cho trẻ em" }
+                new Category { CategoryId = 1, Name = "Ultrabooks", Description = "Lightweight and portable laptops" },
+                new Category { CategoryId = 2, Name = "Gaming Laptops", Description = "High performance laptops for gaming" },
+                new Category { CategoryId = 3, Name = "Business Laptops", Description = "Laptops designed for business use" },
+                new Category { CategoryId = 4, Name = "2-in-1 Laptops", Description = "Convertible laptops with touchscreen" },
+                new Category { CategoryId = 5, Name = "Budget Laptops", Description = "Affordable laptops for everyday use" },
+                new Category { CategoryId = 6, Name = "Workstations", Description = "Powerful laptops for professional work" }
+
 
 
                 );
-            modelBuilder.Entity<Product>().HasData(
-     new Product { ProductId = 1, Name = "Xe đạp thể thao", stock = 10, Description = "Xe cho dân chuyên nghiệp", Price = 1200.50, LinkImagesPath = "img1.jpg", CategoryId = 1 },
-     new Product { ProductId = 2, Name = "Xe đạp đường phố", stock = 5, Description = "Nhẹ nhàng, dễ đi", Price = 800.00, LinkImagesPath = "img2.jpg", CategoryId = 2 },
-     new Product { ProductId = 3, Name = "Xe đạp leo núi", stock = 7, Description = "Dành cho địa hình gồ ghề", Price = 1500.75, LinkImagesPath = "img3.jpg", CategoryId = 1 },
-     new Product { ProductId = 4, Name = "Xe đạp gấp", stock = 3, Description = "Tiện lợi, gấp gọn dễ dàng", Price = 950.00, LinkImagesPath = "img4.jpg", CategoryId = 2 },
-     new Product { ProductId = 5, Name = "Xe đạp trẻ em", stock = 15, Description = "An toàn, thiết kế cho trẻ nhỏ", Price = 500.00, LinkImagesPath = "img5.jpg", CategoryId = 3 },
-     new Product { ProductId = 6, Name = "Xe đạp đua", stock = 4, Description = "Tốc độ cao, dành cho đường đua", Price = 1800.00, LinkImagesPath = "img6.jpg", CategoryId = 1 },
-     new Product { ProductId = 7, Name = "Xe đạp nữ", stock = 6, Description = "Thiết kế nhẹ nhàng, phù hợp cho nữ", Price = 750.00, LinkImagesPath = "img7.jpg", CategoryId = 2 },
-     new Product { ProductId = 8, Name = "Xe đạp điện trẻ em", stock = 8, Description = "Xe đạp có hỗ trợ điện dành cho trẻ em", Price = 1200.00, LinkImagesPath = "img8.jpg", CategoryId = 3 },
-     new Product { ProductId = 9, Name = "Xe đạp touring", stock = 2, Description = "Xe phù hợp cho du lịch đường dài", Price = 2000.00, LinkImagesPath = "img9.jpg", CategoryId = 1 },
-     new Product { ProductId = 10, Name = "Xe đạp mini", stock = 9, Description = "Xe đạp nhỏ gọn, phù hợp cho học sinh", Price = 650.00, LinkImagesPath = "img10.jpg", CategoryId = 2 }
- );
+            // 60 Product laptops (10 product mỗi category)
+            var products = new List<Product>();
+            int productId = 1;
+            var rnd = new Random();
+
+            for (int categoryId = 1; categoryId <= 6; categoryId++)
+            {
+                string categoryName = categoryId switch
+                {
+                    1 => "Ultrabook",
+                    2 => "Gaming Laptop",
+                    3 => "Business Laptop",
+                    4 => "2-in-1 Laptop",
+                    5 => "Budget Laptop",
+                    6 => "Workstation",
+                    _ => "Laptop"
+                };
+
+                string categoryImageFolder = categoryId switch
+                {
+                    1 => "ultrabook",
+                    2 => "gaming_laptop",
+                    3 => "business_laptop",
+                    4 => "2in1_laptop",
+                    5 => "budget_laptop",
+                    6 => "workstation",
+                    _ => "laptop"
+                };
+
+                for (int i = 1; i <= 10; i++)
+                {
+                    products.Add(new Product
+                    {
+                        ProductId = productId++,
+                        Name = $"{categoryName} Model {i}",
+                        Description = $"High quality {categoryName} with excellent features, model {i}.",
+                        stock = rnd.Next(5, 100),
+                        Price = Math.Round(rnd.NextDouble() * (3000 - 500) + 500, 2),
+                        LinkImagesPath = $"images/{categoryImageFolder}_model_{i}.jpg",
+                        CategoryId = categoryId
+                    });
+                }
+            }
+            modelBuilder.Entity<Product>().HasData(products.ToArray());
+
 
         }
     }
 }
+

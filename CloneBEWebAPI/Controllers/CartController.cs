@@ -17,6 +17,7 @@ namespace CloneBEWebAPI.Controllers
         {
             _cartService = cartService;
         }
+
         [HttpPost("add")]
         public async Task<IActionResult> AddToCart([FromBody] ProductCartRequest request)
         {
@@ -28,7 +29,6 @@ namespace CloneBEWebAPI.Controllers
             return Ok("Đã thêm vào giỏ hàng thành công.");
         }
 
-        // GET: api/cart/items
         [HttpGet("items")]
         public async Task<IActionResult> GetCartItems()
         {
@@ -40,17 +40,33 @@ namespace CloneBEWebAPI.Controllers
             return Ok(cartItems);
         }
 
-        // DELETE: api/cart/item/{id}
-
         [HttpDelete("item/{id}")]
         public async Task<IActionResult> DeleteCartItem(int id)
         {
-            var result = await _cartService.DeleteCartItem(id);
+            var result = await _cartService.DeleteCartItem(id, User);
             if (!result)
             {
                 return NotFound("Không tìm thấy mục giỏ hàng cần xoá.");
             }
             return Ok("Đã xoá sản phẩm khỏi giỏ hàng.");
+        }
+
+        [HttpPut("item/{id}/quantity")]
+        public async Task<IActionResult> UpdateCartItemQuantity(int id, [FromQuery] int quantity)
+        {
+            var result = await _cartService.UpdateCartItemQuantity(id, quantity, User);
+            if (!result)
+            {
+                return BadRequest("Không thể cập nhật số lượng.");
+            }
+            return Ok("Đã cập nhật số lượng sản phẩm trong giỏ hàng.");
+        }
+
+        [HttpGet("total")]
+        public async Task<IActionResult> GetCartTotal()
+        {
+            var total = await _cartService.GetCartTotal(User);
+            return Ok(new { Total = total });
         }
     }
 }

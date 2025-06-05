@@ -16,12 +16,24 @@ namespace CloneBEWebAPI.Controllers
         {
             _orderService = orderService;
         }
+        // Admin lấy toàn bộ đơn hàng
+        [HttpGet("all")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            var orders = await _orderService.GetAllOrdersAsync();
+            return Ok(orders);
+        }
 
         // Đặt hàng
+
         [HttpPost("place")]
         [Authorize]
         public async Task<IActionResult> PlaceOrder([FromBody] OrderRequest request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var result = await _orderService.PlaceOrderAsync(User, request);
             return result ? Ok("Order placed successfully") : BadRequest("Failed to place order");
         }
@@ -88,5 +100,14 @@ namespace CloneBEWebAPI.Controllers
             var result = await _orderService.DeleteOrderAsync(orderId);
             return result ? Ok("Order deleted") : BadRequest("Cannot delete order");
         }
+        [HttpPost("cancel/{orderId}")]
+        [Authorize]
+        public async Task<IActionResult> CancelOrder(int orderId)
+        {
+            var result = await _orderService.CancelOrderAsync(orderId, User);
+            return result ? Ok("Order cancelled") : BadRequest("Cancel failed");
+        }
+
     }
+
 }

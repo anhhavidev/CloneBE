@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using CloneBE.Domain.EF;
@@ -18,5 +19,6 @@ namespace CloneBE.Domain.InterfaceRepo
         Task<bool> deletecartitem(int cartitemid);
         Task RemoveCartItemsByIdsAsync(List<int> cartItemIds);
         Task<IEnumerable<CartItem>> GetAllItem(string userid);
+        Task<CartItem> GetCartItemById(int cartItemId);
     }
 }

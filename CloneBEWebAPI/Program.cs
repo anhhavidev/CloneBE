@@ -16,6 +16,7 @@ using CloneBE.Domain.EF;
 using CloneBEWebAPI.Middleware;
 using CloneBE.Application.Helper;
 using CloneBE.Application.Interface;
+using FluentValidation.AspNetCore;
 
 
 namespace CloneBEWebAPI
@@ -86,6 +87,9 @@ namespace CloneBEWebAPI
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IIUserService, UserService>();
             builder.Services.AddTransient<CloneBE.Application.Helper.ISendMailService, CloneBE.Application.Helper.SendMailService>();
+            builder.Services.AddControllers()
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
+
             // Đọc cấu hình từ appsettings.json
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddAutoMapper(typeof(MappingProfile));

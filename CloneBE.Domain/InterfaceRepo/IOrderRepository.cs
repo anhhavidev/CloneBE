@@ -17,5 +17,6 @@ namespace CloneBE.Domain.InterfaceRepo
         Task UpdateOrderStatusAsync(int orderId, string newStatus);
         Task<IDbContextTransaction> BeginTransactionAsync();
         Task<bool> DeleteOrderAsync(int orderId);
+        Task<IEnumerable<Order>> GetAllOrdersAsync();
     }
 }

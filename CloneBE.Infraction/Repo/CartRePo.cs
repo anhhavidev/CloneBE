@@ -54,6 +54,16 @@ namespace CloneBE.Infraction.Repo
             return   await db.cartItems.Where(x=>x.Cart.UserId == userid).ToListAsync();
         }
 
+        public async Task<CartItem> GetCartItemById(int cartItemId)
+        {
+        
+            return await db.cartItems
+                .Include(c => c.Cart) // 👈 Thêm cái này để kiểm tra quyền sở hữu
+                .FirstOrDefaultAsync(c => c.CartitemId == cartItemId);
+        }
+
+        
+
         public async Task RemoveCartItemsByIdsAsync(List<int> cartItemIds)
         {
             var itemsToRemove =  await db.cartItems.Where(ci => cartItemIds.Contains(ci.CartitemId)).ToListAsync();

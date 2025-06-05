@@ -9,6 +9,7 @@ namespace CloneBE.Application.DTO.Request
 {
     public  class OrderRequest
     {
+        public string FullName { get; set; }           // Họ tên người nhận
         public string ShippingAddress { get; set; }  // Địa chỉ giao hàng
 
        

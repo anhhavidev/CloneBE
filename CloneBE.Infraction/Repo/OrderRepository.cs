@@ -79,5 +79,12 @@ namespace CloneBE.Infraction.Repo
             _context.orders.Remove(order);
             return true;
         }
+
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        {
+            return await _context.orders
+         .Include(o => o.OrderDetails)
+         .ToListAsync();
+        }
     }
 }

@@ -21,6 +21,8 @@ namespace CloneBE.Application.Interface.Serivce
       Task<bool> DeleteOrderAsync(int orderId);
         
      Task<IEnumerable<OrderDTO>> GetOrdersByUserAsync(ClaimsPrincipal user);
+        Task<bool> CancelOrderAsync(int orderId, ClaimsPrincipal user);
+        Task<IEnumerable<OrderDTO>> GetAllOrdersAsync();
 
 
 

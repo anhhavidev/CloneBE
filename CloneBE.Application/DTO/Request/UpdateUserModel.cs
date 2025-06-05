@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
-namespace CloneBE.Domain.EF
+namespace CloneBE.Application.DTO.Request
 {
-    public  class AppUser :IdentityUser<string>
+    public class UpdateUserModel
     {
-       public int CartId { get; set; }
-        public Cart Cart { get; set; }
         public string FullName { get; set; }
+        public string PhoneNumber { get; set; }
         public string Address { get; set; }
-
-
-
     }
 }

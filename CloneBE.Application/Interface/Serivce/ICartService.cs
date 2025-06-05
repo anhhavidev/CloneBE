@@ -13,7 +13,9 @@ namespace CloneBE.Application.Interface.Serivce
     public interface ICartService
     {
         Task<bool> AddProductToCart(ProductCartRequest cartRequest, ClaimsPrincipal users);
-        Task<bool> DeleteCartItem(int CartItemId);
+        Task<bool> DeleteCartItem(int cartItemId, ClaimsPrincipal users);
         Task<IEnumerable<CartItemDTO>> GetallCartItem(ClaimsPrincipal users);
+        Task<double> GetCartTotal(ClaimsPrincipal users);
+        Task<bool> UpdateCartItemQuantity(int cartItemId, int newQuantity, ClaimsPrincipal users);
     }
 }

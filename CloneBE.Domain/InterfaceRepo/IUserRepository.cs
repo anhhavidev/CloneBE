@@ -11,5 +11,7 @@ namespace CloneBE.Domain.InterfaceRepo
     {
         Task<IEnumerable<AppUser>> GetAllUsersAsync();
         Task<AppUser> GetUserByIdAsync(string userId);
+        Task<bool> UpdateCurrentUserAsync(AppUser user);
+
     }
 }

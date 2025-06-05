@@ -28,8 +28,15 @@ namespace CloneBE.Infraction.Repo
 
         public async Task<AppUser> GetUserByIdAsync(string userId)
         {
-            return await db.Users
-                                 .FirstOrDefaultAsync(u => u.Id == userId); // Lấy người dùng theo userId
+            return await db.Users.FindAsync(userId); // Lấy người dùng theo userId
+        }
+
+       
+
+        public async Task<bool> UpdateCurrentUserAsync(AppUser user)
+        {
+            db.Users.Update(user);
+            return await db.SaveChangesAsync() > 0;
         }
     }
 }
