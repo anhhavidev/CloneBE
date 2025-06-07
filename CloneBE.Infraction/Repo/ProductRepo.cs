@@ -32,8 +32,10 @@ namespace CloneBE.Infraction.Repo
             // 🔍 **Tìm kiếm theo tên**
             if (!string.IsNullOrWhiteSpace(request.SearchTerm))
             {
-                query = query.Where(p => p.Name.Contains(request.SearchTerm));
+                var lowerSearchTerm = request.SearchTerm.ToLower();
+                query = query.Where(p => p.Name.ToLower().Contains(lowerSearchTerm));
             }
+
 
             //// 📌 **Lọc theo danh mục**
             //if (!string.IsNullOrWhiteSpace(request.Category))

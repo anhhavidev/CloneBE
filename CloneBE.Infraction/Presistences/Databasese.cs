@@ -13,6 +13,7 @@ namespace CloneBE.Infraction.Presistences
 {
     public class Databasese : IdentityDbContext<AppUser,AppIdentityRole, string>
     {
+        public Databasese() { }
         public DbSet<Product> products { get; set; }
         public DbSet<Category>categories { get; set; }
         public DbSet<Cart>carts { get; set; }

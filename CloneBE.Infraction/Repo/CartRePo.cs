@@ -46,6 +46,7 @@ namespace CloneBE.Infraction.Repo
             var product = await db.cartItems.FindAsync(cartitemid);
             if (product == null) return false;
              db.cartItems .Remove(product);
+            await db.SaveChangesAsync();  // Phải có dòng này để lưu thay đổi
             return true;
         }
 
